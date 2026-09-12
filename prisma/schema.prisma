@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Season {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pages     Page[]
+  documents Document[]
+  locations Location[]
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  seasonId  String
+  number    Int
+  title     String
+  slug      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  season  Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  rewards Reward[]
+
+  @@unique([seasonId, number])
+  @@unique([seasonId, slug])
+}
+
+model Reward {
+  id          String   @id @default(cuid())
+  pageId      String
+  order       Int
+  name        String
+  slug        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  page         Page                @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  requirements RewardRequirement[]
+
+  @@unique([pageId, order])
+  @@unique([pageId, slug])
+}
+
+model Document {
+  id          String   @id @default(cuid())
+  seasonId    String
+  name        String
+  slug        String
+  description String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  season       Season              @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  requirements RewardRequirement[]
+  spawns       DocumentSpawn[]
+
+  @@unique([seasonId, slug])
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  seasonId    String
+  name        String
+  slug        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  season Season          @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  spawns DocumentSpawn[]
+
+  @@unique([seasonId, slug])
+}
+
+model DocumentSpawn {
+  id         String   @id @default(cuid())
+  documentId String
+  locationId String
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, locationId])
+}
+
+model RewardRequirement {
+  id         String   @id @default(cuid())
+  rewardId   String
+  documentId String
+  amount     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  reward   Reward   @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([rewardId, documentId])
+}
