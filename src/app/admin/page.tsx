@@ -35,19 +35,9 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Дашборд</h1>
-          <p className="text-zinc-400">Обзор текущего состояния базы данных</p>
-        </div>
-        <form action="/api/admin/logout" method="POST">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors text-sm"
-          >
-            Выйти
-          </button>
-        </form>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Дашборд</h1>
+        <p className="text-zinc-400">Обзор текущего состояния базы данных</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">

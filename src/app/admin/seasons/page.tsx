@@ -1,16 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { requireAdmin } from "@/lib/auth";
 import { SeasonDeleteButton } from "./_components/SeasonDeleteButton";
 
 export default async function AdminSeasonsPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin-token")?.value;
-
-  if (!token || token !== process.env.ADMIN_TOKEN) {
-    redirect("/");
-  }
+  await requireAdmin(); // ← одна строка вместо трёх
 
   const seasons = await prisma.season.findMany({
     include: {
