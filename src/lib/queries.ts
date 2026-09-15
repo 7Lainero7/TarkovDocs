@@ -11,7 +11,6 @@ export async function getActiveSeason() {
         orderBy: { number: "asc" },
       },
       documents: true,
-      locations: true,
     },
   });
 }
@@ -23,28 +22,25 @@ export async function getSeasonBySlug(slug: string) {
       pages: {
         include: {
           rewards: {
-            include: {
-              requirements: {
-                include: {
-                  document: true,
-                },
-              },
-            },
             orderBy: { order: "asc" },
           },
         },
         orderBy: { number: "asc" },
       },
       documents: true,
-      locations: {
+    },
+  });
+}
+
+export async function getAllLocations() {
+  return prisma.location.findMany({
+    include: {
+      spawns: {
         include: {
-          spawns: {
-            include: {
-              document: true,
-            },
-          },
+          document: { include: { season: true } },
         },
       },
     },
+    orderBy: { name: "asc" },
   });
 }

@@ -22,7 +22,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
   const season = await prisma.season.findUnique({
     where: { id },
-    include: { pages: true, documents: true, locations: true },
+    include: { pages: true, documents: true },
   });
 
   if (!season) {

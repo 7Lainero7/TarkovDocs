@@ -23,7 +23,7 @@ export async function GET() {
   }
 
   const seasons = await prisma.season.findMany({
-    include: { pages: true, documents: true, locations: true },
+    include: { pages: true, documents: true },
     orderBy: { createdAt: "desc" },
   });
 

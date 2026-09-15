@@ -15,21 +15,17 @@ export function Header() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
         setError(data.error || "Ошибка входа");
         return;
       }
-
       setShowAdminLogin(false);
       setToken("");
       router.push("/admin");
@@ -52,13 +48,9 @@ export function Header() {
               </div>
               <span className="text-xl font-bold">TarkovDocs</span>
             </Link>
-            
             <nav className="flex items-center gap-6">
               <Link href="/" className="hover:text-amber-500 transition-colors">
                 Главная
-              </Link>
-              <Link href="/documents" className="hover:text-amber-500 transition-colors">
-                Документы
               </Link>
               <button
                 onClick={() => setShowAdminLogin(!showAdminLogin)}
@@ -83,7 +75,6 @@ export function Header() {
                 ✕
               </button>
             </div>
-
             <form onSubmit={handleAdminLogin} className="space-y-4">
               <div>
                 <label htmlFor="token" className="block text-sm font-medium mb-2">
@@ -101,13 +92,11 @@ export function Header() {
                   autoFocus
                 />
               </div>
-
               {error && (
                 <div className="text-rose-500 text-sm bg-rose-500/10 border border-rose-500/20 rounded px-3 py-2">
                   {error}
                 </div>
               )}
-
               <button
                 type="submit"
                 disabled={loading || !token}

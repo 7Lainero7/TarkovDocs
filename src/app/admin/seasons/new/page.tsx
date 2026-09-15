@@ -1,23 +1,19 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { SeasonForm } from "../_components/SeasonForm";
+import { ArrowLeft } from "lucide-react";
+import { requireAdmin } from "@/lib/auth";
+import { SeasonForm } from "@/components/forms/SeasonForm";
 
 export default async function NewSeasonPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin-token")?.value;
-
-  if (!token || token !== process.env.ADMIN_TOKEN) {
-    redirect("/");
-  }
+  await requireAdmin();
 
   return (
-    <div className="max-w-2xl">
+    <div>
       <div className="mb-8">
         <Link
           href="/admin/seasons"
-          className="text-sm text-zinc-400 hover:text-white transition-colors mb-4 inline-block"
+          className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors mb-4"
         >
+          <ArrowLeft size={16} />
           Назад к списку сезонов
         </Link>
         <h1 className="text-3xl font-bold">Новый сезон</h1>

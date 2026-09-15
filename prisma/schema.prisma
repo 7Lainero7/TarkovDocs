@@ -18,7 +18,6 @@ model Season {
 
   pages     Page[]
   documents Document[]
-  locations Location[]
 }
 
 model Page {
@@ -38,21 +37,19 @@ model Page {
 }
 
 model Reward {
-  id          String   @id @default(cuid())
-  pageId      String
-  order       Int
-  name        String
-  slug        String
-  description String?
-  imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  page         Page                @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  requirements RewardRequirement[]
+  id                     String   @id @default(cuid())
+  pageId                 String
+  order                  Int
+  name                   String
+  slug                   String
+  description            String?
+  imageUrl               String?
+  requiredDocumentsCount Int      @default(3)
+  page                   Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 
   @@unique([pageId, order])
-  @@unique([pageId, slug])
 }
 
 model Document {
@@ -65,26 +62,19 @@ model Document {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  season       Season              @relation(fields: [seasonId], references: [id], onDelete: Cascade)
-  requirements RewardRequirement[]
-  spawns       DocumentSpawn[]
+  season Season          @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  spawns DocumentSpawn[]
 
   @@unique([seasonId, slug])
 }
 
 model Location {
-  id          String   @id @default(cuid())
-  seasonId    String
+  id          String  @id @default(cuid())
   name        String
-  slug        String
+  slug        String  @unique
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  season Season          @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   spawns DocumentSpawn[]
-
-  @@unique([seasonId, slug])
 }
 
 model DocumentSpawn {
@@ -99,18 +89,4 @@ model DocumentSpawn {
   location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
 
   @@unique([documentId, locationId])
-}
-
-model RewardRequirement {
-  id         String   @id @default(cuid())
-  rewardId   String
-  documentId String
-  amount     Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  reward   Reward   @relation(fields: [rewardId], references: [id], onDelete: Cascade)
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
-
-  @@unique([rewardId, documentId])
 }
